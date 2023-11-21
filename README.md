@@ -1,2 +1,2 @@
-# Such_Go
+# SuchGo
 Web Framework ready to go..
