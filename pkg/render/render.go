@@ -6,16 +6,22 @@ import (
 	"net/http"
 	"path/filepath"
 	"text/template"
+
+	"github.com/Sochika/SuchGo/pkg/config"
 )
 
 var functions = template.FuncMap{}
 
+var app *config.SystemConfig
+
+func RefreshTemplates(a *config.SystemConfig) {
+	app = a
+}
+
 // RenderTemplate renders templates using html
 func RenderTemplate(w http.ResponseWriter, tmpl string) {
-	pagesCached, err := CreateTemplateCache()
-	if err != nil {
-		log.Fatal("Error Getting template error cache:", err)
-	}
+
+	pagesCached := app.TemplateCache
 
 	page, ok := pagesCached[tmpl]
 	if !ok {
@@ -26,7 +32,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 
 	_ = page.Execute(buf, nil)
 
-	_, err = buf.WriteTo(w)
+	_, err := buf.WriteTo(w)
 
 	if err != nil {
 		log.Println("Error writing template to Browser", err)
