@@ -14,6 +14,7 @@ var functions = template.FuncMap{}
 
 var app *config.SystemConfig
 
+// Set the config for the Template package
 func RefreshTemplates(a *config.SystemConfig) {
 	app = a
 }
@@ -21,9 +22,17 @@ func RefreshTemplates(a *config.SystemConfig) {
 // RenderTemplate renders templates using html
 func RenderTemplate(w http.ResponseWriter, tmpl string) {
 
-	pagesCached := app.TemplateCache
+	var pagesCached map[string]*template.Template
+	// if app.UseCache {
+	pagesCached = app.TemplateCache
+	// } else {
+	// pagesCached, _ = CreateTemplateCache()
+	// if err != nil {
+	// 	log.Panicln(err)
+	// }
+	// }
 
-	page, ok := pagesCached[tmpl]
+	page, ok := pagesCached[tmpl+".html"]
 	if !ok {
 		log.Fatalf("%s Page not Found in Template", tmpl)
 	}
